@@ -1,1 +1,1 @@
-/ JS Design Pattern Projects
+# JS Design Pattern Projects
