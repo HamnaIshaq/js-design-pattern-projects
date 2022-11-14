@@ -2,11 +2,11 @@
 let model = {
   init: function() {
     this.data = [
-      { name: 'cat 1', img: './assets/cat-1.png', clickCount: 0 },
-      { name: 'cat 2', img: './assets/cat-2.png', clickCount: 0 },
-      { name: 'cat 3', img: './assets/cat-3.png', clickCount: 0 },
-      { name: 'cat 4', img: './assets/cat-4.png', clickCount: 0 },
-      { name: 'cat 5', img: './assets/cat-5.png', clickCount: 0 },
+      { id: 1, name: 'cat 1', img: './assets/cat-1.png', clickCount: 0 },
+      { id: 2, name: 'cat 2', img: './assets/cat-2.png', clickCount: 0 },
+      { id: 3, name: 'cat 3', img: './assets/cat-3.png', clickCount: 0 },
+      { id: 4, name: 'cat 4', img: './assets/cat-4.png', clickCount: 0 },
+      { id: 5, name: 'cat 5', img: './assets/cat-5.png', clickCount: 0 },
     ];
   },
   getCatList: function() {
@@ -23,13 +23,13 @@ let model = {
 
 let octopus = {
   // communicate between model and view to get cat list data
-  getCatList: function () {
+  fetchCatList: function () {
     return model.getCatList();
   },
   init: function() {
     model.init();
     viewCatList.init();
-    this.currentCat = this.getCatList()[0];
+    this.currentCat = this.fetchCatList()[0];
     viewClickedCat.init();
   },
   getCurrentCat: function() {
@@ -39,6 +39,15 @@ let octopus = {
     model.increment();
     viewClickedCat.render();
   },
+  changeCat: function(clickedCatId) {
+    let catList = octopus.fetchCatList();
+    catList.forEach(cat => {
+      if(cat.id === parseInt(clickedCatId)) {
+        this.currentCat = cat;
+      }
+    })
+    viewClickedCat.render();
+  }
 }
 
 let viewCatList = {
@@ -50,17 +59,18 @@ let viewCatList = {
   },
   bindEvents: function() {
     this.catListContainer.addEventListener('click', function(e) {
-      console.log(e.target)
+      let clickedCatId = e.target.getAttribute('data-id')
+      octopus.changeCat(clickedCatId);
     }, false);
   },
   // render cat list on page
   render: function() {
     let catListItem = '';
-    let catList = octopus.getCatList();
+    let catList = octopus.fetchCatList();
     catList.forEach(cat => {
       catListItem += `
         <li>
-          <button>${cat.name}</button>
+          <button data-id="${cat.id}">${cat.name}</button>
         </li>
       `;
     })
